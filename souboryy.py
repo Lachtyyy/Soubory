@@ -1,98 +1,125 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 15 08:08:59 2019
+Created on Thu Apr 25 15:23:00 2019
 
-@author: lac35158
+@author: Lachtyy
 """
+
 import random
 
-def mala(vstup, vystup):
-    with open(vstup, 'r') as f:
-        text = f.read()
-    text = text.lower()
-    with open(vystup, 'w') as f:
-        f.write(text)
-        
-
-def mala_znovu(vstup, vystup):
+def prevod():
     try:
-        with open(vstup, 'r', encoding='cp1250') as fr, open(vystup, 'w') as fw:
-            while True:
-                radek = fr.read(1)
-                print(type(radek), radek)
-                if radek == '':
-                    break
-                fw.write(radek)
-    except FileNotFoundError:
-        print('nenašel se ;-(')
-    except OSError as err:
-        print(err.strerror)
-        print('Chyba zápisu')
-
-
-def replace(vstup, vystup):
-    try: 
-        inName = raw_input(">>> zadej jmého vstupního souboru: ")
-        inFile = open(inName,"r")
-        outName = raw_input(">>> zadej jmého výtupního souboru: ")
-        outFile = open(outName,"w")
+        JmenoVS = input ('\nZadej jméno vstup souboru: ')
+        SouborVS = open (JmenoVS, 'r')
+        JmenoVYS = input ('Zadej jméno výstup souboru: ')
+        SouborVY = open (JmenoVYS, 'w')
         while True:
-            radek = inFile.readline()
+            radek = SouborVS.readline()
             if radek == '':
                 break
-            outFile.write(radek.decode('utf-8').upper().encode('utf-8'))
-            outFile.write(radek.decode('utf-8').lower().encode('utf-8'))
-        inFile.close()
-        outFile.close()
-        while True:
-            znak = inFile.read(1)
-            if znak == '':
-                break
-            if znak == znakStary:
-                outFile.write(znakNovy)
             else:
-                outFile.write(znak)
+                SouborVY.write(radek.lower())
+        print ('\nHotovo')
+        SouborVS.close()
+        SouborVY.close()
+    except IOError:
+        print ('\nChyba zkus to znova')
+
+def nahrazení():
+    try:
+        JmenoVS = input ('\nZadej jméno vstupního souboru: ')
+        SouborVS = open (JmenoVS, 'r')
+        JmenoVYS = input ('Zadej jméno výstupního souboru: ')
+        SouborVY = open (JmenoVYS, 'w')
+        Stary = input ('Který znak se má nahradit: ')
+        Novy = input ('Jakým znakem se má nahradit: ')
         while True:
-            radek = inFile.readline()
+            radek = SouborVS.readline()
             if radek == '':
                 break
-            outFile.write(radek.decode('utf-8').replace(znakStary,znakNovy).encode('utf-8'))
-            
-    # mala_znovu('soubor.cp1250', '/etc/fstab')
-
-def statistika(vstup):
-    cetnost = dict()
-    with open(vstup, 'r') as f:
-        while True:
-            pismenko = f.read(1)
-            if pismenko == '':
-                break
-            if pismenko == '\n' or pismenko == ' ':
-                continue
-            pismenko = pismenko.upper()
-            if pismenko in cetnost:
-                cetnost[pismenko] += 1
             else:
-                cetnost[pismenko] = 1
-    max_ = max(cetnost.values())
-    for klic in sorted(cetnost):
-        print(klic, cetnost[klic], '#' * int(cetnost[klic] * (70 / max_)))
-
-def nahodnyText(pocetSlov):
-           samohlasky = 'aeiyou'
-           souhlasky ='qwrtpsdfghjklzxcvbnm'
-    
-           for i in range(pocetSlov):
-           #jedno slovo
-               delkaSlova = random.randint(1,8)
-               zacatek = random.randint(0,1)  # zacinam samohlaskou nebo souhlaskou?
-               for i in range(delkaSlova):
-                   if i % 2 == zacatek:       # ztrida se samohlaska a souhlaska
-                       sys.stdout.write( random.choice(souhlasky) )
-                   else:
-                       sys.stdout.write( random.choice(samohlasky) )
-               sys.stdout.write(' ')
-           sys.stdout.write('\n\n')
-
-statistika('statisticka.data')
+                SouborVY.write(radek.replace(Stary, Novy))
+        print ('\nHotovo')
+        SouborVS.close()
+        SouborVY.close()
+    except IOError:
+        print ('\nChyba, zkus to znova')
+        
+def statistika():
+    try:
+        JmenoVS = input ('\nZadej jméno vstupního souboru: ')
+        SouborVS = open (JmenoVS, 'r')
+        radky = 0
+        znaky = 0
+        slova = 0
+        cetnost = {}
+        while True:
+            radek = SouborVS.readline()
+            if radek == '':
+                break
+            else:
+                radky += 1
+                znaky += len(radek)
+                slova += len(radek.split())
+                for STznak in radek:
+                    znak = STznak.upper()
+                    if znak in (' ', '\t', '\n'):
+                        continue
+                    if znak in cetnost:
+                        cetnost[znak] += 1
+                    else:
+                        cetnost[znak] = 1
+        
+        for znak in sorted(cetnost):
+            print (znak, '=', cetnost[znak])
+        print ('Počet řádků:', radky)
+        print ('Počet slov:', slova)
+        print ('Počet znaků:', znaky)
+        SouborVS.close()
+        print ('\nHotovo')
+    except IOError:
+        print ('\nChyba, zkus to znova')
+        
+def nahodnytext():
+    try:
+        JmenoVYS = input ('\nZadej jméno výstupního souboru: ')
+        SouborVY = open (JmenoVYS, 'w')
+        samohlasky = 'aeiyou'
+        souhlasky = 'qwrtzpsdfghjklxcvbnm'
+        for i in range (50):
+            delka = random.randint (2,8)
+            zacatek = random.randint (0, 1)#začínám samohláskou nebo souhláskou
+            for i in range (delka):
+                if zacatek:
+                    SouborVY.write(random.choice(souhlasky))
+                else:
+                    SouborVY.write(random.choice(samohlasky))
+                zacatek = not(zacatek)
+            SouborVY.write(' ')
+        SouborVY.close()
+        print ('\nHotovo')
+    except IOError:
+        print ('\nChyba, zkus to znova')
+        
+while True:
+    print ('\nMenu')
+    print ('1) Převod na malá písmena')
+    print ('2) Nahrazení znaků')
+    print ('3) Statistika souboru')
+    print ('4) Generování náhodného textu')
+    try:
+        volba = int(input('Tvoje volba? '))
+        if volba == 1:
+            prevod()
+        elif volba == 2:
+            nahrazení()
+        elif volba == 3:
+            statistika ()
+        elif volba == 4:
+            nahodnytext()
+        else:
+            print ('Vyber číslo 1 - 5: ')
+    except ValueError:
+        print ('Vyber číslo 1 - 5: ')
+    except EOFError:
+        exit (0)        
